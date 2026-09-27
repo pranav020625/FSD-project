@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Notice Board - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Student Resident</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">My Living Space</div>
+        <a href="/student/dashboard.html" class="nav-link"><i class="fa-solid fa-house-user"></i> Overview</a>
+        <a href="/student/room.html" class="nav-link"><i class="fa-solid fa-door-open"></i> My Room</a>
+        <a href="/student/fees.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Fee Status</a>
+
+        <div class="nav-label">Desk & Services</div>
+        <a href="/student/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> My Complaints</a>
+        <a href="/student/visitors.html" class="nav-link"><i class="fa-solid fa-id-badge"></i> Visitor Passes</a>
+        <a href="/student/notices.html" class="nav-link active"><i class="fa-solid fa-clipboard-list"></i> Hostel Notices</a>
+        <a href="/student/profile.html" class="nav-link"><i class="fa-solid fa-user-gear"></i> My Profile</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar" style="background:linear-gradient(135deg, #10b981, #06b6d4);">S</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Student</span>
+            <span id="sidebar-user-role" class="user-role-label">RESIDENT</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Hostel Bulletin Board</h1>
+        </div>
+      </header>
+
+      <div class="content-body">
+        
+        <div class="action-bar">
+          <div class="search-filter-group">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="notice-search" class="form-control" placeholder="Search notices..." oninput="loadNotices()">
+            </div>
+
+            <select id="filter-notice-category" class="form-select filter-select" onchange="loadNotices()">
+              <option value="All">All Categories</option>
+              <option value="General">General</option>
+              <option value="Event">Event</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Rules">Rules & Timing</option>
+              <option value="Mess">Mess</option>
+              <option value="Urgent">Urgent Alert</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="loadNotices()">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <!-- Notices Cards Grid -->
+        <div id="notices-list-container" class="notices-list">
+          <div class="loading-container" style="grid-column: 1/-1;"><span class="spinner"></span></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/notices.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('student');
+      loadNotices();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration - Hostel Management System</title>
+  <meta name="description" content="Register as a new student resident in the hostel system.">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 27, 75) 90%);
+      padding: 2rem 1rem;
+    }
+    .register-card {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 600px;
+      padding: 2.25rem;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+    .auth-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="register-card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <i class="fa-solid fa-hotel"></i>
+      </div>
+      <h2 style="font-size: 1.5rem; color: #0f172a;">Student Resident Sign Up</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">Create your resident student account to access hostel services</p>
+    </div>
+
+    <form id="register-form" onsubmit="handleRegister(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full Name <span class="req">*</span></label>
+          <input type="text" id="reg-name" name="name" class="form-control" placeholder="e.g. Siddharth Rao" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-roll">Student ID / Roll No <span class="req">*</span></label>
+          <input type="text" id="reg-roll" name="studentId" class="form-control" placeholder="e.g. HST-2026-101" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address <span class="req">*</span></label>
+          <input type="email" id="reg-email" name="email" class="form-control" placeholder="siddharth@hostel.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-phone">Phone Number <span class="req">*</span></label>
+          <input type="tel" id="reg-phone" name="phone" class="form-control" placeholder="+91 9876543210" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password (min 6 chars) <span class="req">*</span></label>
+          <input type="password" id="reg-password" name="password" minlength="6" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-gender">Gender <span class="req">*</span></label>
+          <select id="reg-gender" name="gender" class="form-select" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="reg-course">Course <span class="req">*</span></label>
+          <input type="text" id="reg-course" name="course" class="form-control" placeholder="e.g. B.Tech" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-branch">Branch / Specialization <span class="req">*</span></label>
+          <input type="text" id="reg-branch" name="branch" class="form-control" placeholder="e.g. Computer Science" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-year">Year of Study <span class="req">*</span></label>
+          <select id="reg-year" name="year" class="form-select" required>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+            <option value="Postgraduate">Postgraduate</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" id="register-btn" class="btn btn-primary" style="width:100%; margin-top:0.5rem; padding:0.75rem;">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:1.5rem; font-size:0.875rem; color:var(--text-muted);">
+      Already have an account? <a href="/login.html" style="font-weight:600;">Sign in here</a>
+    </div>
+
+    <div style="text-align:center; margin-top:0.75rem; font-size:0.8rem;">
+      <a href="/" style="color:var(--text-light);"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      redirectIfLoggedIn();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Management System - Modern Campus Living</title>
+  <meta name="description" content="A comprehensive web-based hostel management system for modern college campuses. Manage students, rooms, fees, grievances, and visitors.">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  
+  <style>
+    .hero-section {
+      padding: 5rem 2rem 4rem 2rem;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #172554 100%);
+      color: #ffffff;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.8125rem;
+      color: #93c5fd;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: #94a3b8;
+      max-width: 650px;
+      margin: 0 auto 2.5rem auto;
+    }
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .features-section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+    .feature-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 1.25rem;
+    }
+    .public-notices-section {
+      background: #f1f5f9;
+      padding: 4rem 2rem;
+    }
+    .footer {
+      background: #0b0f19;
+      color: #94a3b8;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      font-size: 0.875rem;
+      border-top: 1px solid #1f2937;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Landing Top Navbar -->
+  <header style="background:#ffffff; border-bottom:1px solid var(--border-color); padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100;">
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <div style="width:38px; height:38px; background:linear-gradient(135deg, #4361ee, #7209b7); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.25rem;">
+        <i class="fa-solid fa-hotel"></i>
+      </div>
+      <div>
+        <span style="font-weight:800; font-size:1.15rem; color:#0f172a;">Hostel<span style="color:var(--primary);">Sphere</span></span>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:1rem; align-items:center;">
+      <a href="/login.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</a>
+      <a href="/register.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-user-plus"></i> Student Sign Up</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-badge">
+      <i class="fa-solid fa-sparkles"></i> College & University Residential Portal
+    </div>
+    <h1 class="hero-title">
+      Intelligent Campus Living & <br><span>Hostel Management</span>
+    </h1>
+    <p class="hero-subtitle">
+      Automate room allocations, fee collections, student grievances, visitor gate passes, and circular announcements with high security and seamless oversight.
+    </p>
+    <div class="hero-cta">
+      <a href="/login.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-door-open"></i> Access Hostel Portal</a>
+      <a href="#features" class="btn btn-secondary btn-lg" style="background:rgba(255,255,255,0.1); color:#ffffff; border-color:rgba(255,255,255,0.2);"><i class="fa-solid fa-list-check"></i> Explore Modules</a>
+    </div>
+  </section>
+
+  <!-- Key Modules / Features -->
+  <section class="features-section" id="features">
+    <div style="text-align:center; max-width:600px; margin:0 auto;">
+      <span class="badge badge-partial">Complete System</span>
+      <h2 style="font-size:2rem; margin-top:0.5rem; margin-bottom:0.75rem;">Everything you need to run a modern hostel</h2>
+      <p style="color:var(--text-muted);">Purpose-built for wardens, administrators, and residents with role-based access control.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-bed"></i></div>
+        <h3>Room & Bed Allocation</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">
+          Real-time occupancy tracking, block & floor organization, bed capacity validation, and automatic roommate synchronization.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-user-graduate"></i></div>
+        <h3>Student Management</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">
+          Complete profile directory, parent/guardian contact info, academic details, searchable and filterable by branch & year.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+        <h3>Fee & Invoice Tracking</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">
+          Dynamic overdue tracking, partial payment recording, automated status computation, and printable student payment receipts.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-bullhorn"></i></div>
+        <h3>Grievance & Complaints</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">
+          Categorized complaint lodgement (Electricity, WiFi, Mess, Water), priority status tracking, and warden resolution workflows.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#ede9fe; color:#7c3aed;"><i class="fa-solid fa-id-badge"></i></div>
+        <h3>Visitor Gate Passes</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">
+          Digital guest pass requests, warden approval system, entry/exit timestamp logging, and campus security logs.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#ffe4e6; color:#e11d48;"><i class="fa-solid fa-chart-pie"></i></div>
+        <h3>Live Analytics & Reports</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">
+          Dynamic aggregation charts, block-wise occupancy meters, grievance category breakdowns, and one-click CSV report exports.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Notice Bulletin Preview -->
+  <section class="public-notices-section">
+    <div style="max-width:1200px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.75rem; flex-wrap:wrap; gap:1rem;">
+        <div>
+          <span class="badge badge-paid">Official Notice Board</span>
+          <h2 style="font-size:1.75rem; margin-top:0.35rem;">Campus & Hostel Announcements</h2>
+        </div>
+        <a href="/login.html" class="btn btn-outline-primary btn-sm">Login to View All</a>
+      </div>
+
+      <div id="notices-list-container" class="notices-list">
+        <!-- Loaded via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Hostel Management System. All rights reserved.</p>
+    <p style="font-size:0.75rem; color:#64748b; margin-top:0.35rem;">Designed for College & University Campus Administration</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/notices.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadNotices();
+    });
+  </script>
+</body>
+</html>

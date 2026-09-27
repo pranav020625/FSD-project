@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Passes - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Student Resident</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">My Living Space</div>
+        <a href="/student/dashboard.html" class="nav-link"><i class="fa-solid fa-house-user"></i> Overview</a>
+        <a href="/student/room.html" class="nav-link"><i class="fa-solid fa-door-open"></i> My Room</a>
+        <a href="/student/fees.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Fee Status</a>
+
+        <div class="nav-label">Desk & Services</div>
+        <a href="/student/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> My Complaints</a>
+        <a href="/student/visitors.html" class="nav-link active"><i class="fa-solid fa-id-badge"></i> Visitor Passes</a>
+        <a href="/student/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Hostel Notices</a>
+        <a href="/student/profile.html" class="nav-link"><i class="fa-solid fa-user-gear"></i> My Profile</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar" style="background:linear-gradient(135deg, #10b981, #06b6d4);">S</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Student</span>
+            <span id="sidebar-user-role" class="user-role-label">RESIDENT</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Visitor Passes & Guest Requests</h1>
+        </div>
+
+        <div class="navbar-right">
+          <button class="btn btn-primary btn-sm" onclick="openRequestVisitorModal()">
+            <i class="fa-solid fa-plus"></i> Request Visitor Pass
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:6px;"></i> My Registered Visitors</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Visitor Name</th>
+                  <th>Relationship</th>
+                  <th>Visit Date</th>
+                  <th>Timings</th>
+                  <th>Purpose</th>
+                  <th>Pass Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="visitors-table-body">
+                <tr><td colspan="7" class="loading-container"><span class="spinner"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Request Visitor Pass Modal -->
+  <div id="visitor-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Request Visitor Pass</h3>
+        <button class="modal-close" onclick="closeModal('visitor-modal')">&times;</button>
+      </div>
+      <form id="visitor-form" onsubmit="handleSubmitVisitor(event)">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Visitor Full Name <span class="req">*</span></label>
+              <input type="text" id="visitor-name" class="form-control" required placeholder="e.g. Ramesh Patel">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Relationship <span class="req">*</span></label>
+              <input type="text" id="visitor-relation" class="form-control" required placeholder="e.g. Father / Mother / Sibling">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Contact Phone <span class="req">*</span></label>
+              <input type="tel" id="visitor-phone" class="form-control" required placeholder="+91 9876543210">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Visit Date <span class="req">*</span></label>
+              <input type="date" id="visitor-date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expected Arrival Time</label>
+              <input type="text" id="visitor-intime" class="form-control" placeholder="e.g. 11:00 AM">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expected Departure Time</label>
+              <input type="text" id="visitor-outtime" class="form-control" placeholder="e.g. 02:00 PM">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Purpose of Visit <span class="req">*</span></label>
+            <input type="text" id="visitor-purpose" class="form-control" required placeholder="e.g. Family visit and delivering supplies">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('visitor-modal')">Cancel</button>
+          <button type="submit" id="submit-visitor-btn" class="btn btn-primary">
+            <i class="fa-solid fa-paper-plane"></i> Submit Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/visitors.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('student');
+      loadVisitors();
+    });
+  </script>
+</body>
+</html>

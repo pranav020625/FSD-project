@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Warden Admin</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Core Management</div>
+        <a href="/admin/dashboard.html" class="nav-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="/admin/students.html" class="nav-link"><i class="fa-solid fa-user-graduate"></i> Students</a>
+        <a href="/admin/rooms.html" class="nav-link"><i class="fa-solid fa-bed"></i> Rooms & Beds</a>
+        <a href="/admin/fees.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> Hostel Fees</a>
+
+        <div class="nav-label">Operations & Desk</div>
+        <a href="/admin/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Complaints</a>
+        <a href="/admin/visitors.html" class="nav-link"><i class="fa-solid fa-id-badge"></i> Visitor Logs</a>
+        <a href="/admin/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Notice Board</a>
+        <a href="/admin/reports.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Reports & Stats</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar">A</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Chief Warden</span>
+            <span id="sidebar-user-role" class="user-role-label">ADMINISTRATOR</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <main class="main-wrapper">
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Executive Overview</h1>
+        </div>
+
+        <div class="navbar-right">
+          <div class="header-badge">
+            <i class="fa-solid fa-circle-check"></i> System Operational
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="location.href='/admin/students.html'">
+            <i class="fa-solid fa-plus"></i> Add Student
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body">
+        
+        <!-- Live Stat Cards -->
+        <div class="stats-grid">
+          <!-- Students Card -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Total Students</span>
+              <span id="stat-total-students" class="stat-value">--</span>
+              <span id="stat-active-students" class="stat-subtext">Loading active...</span>
+            </div>
+            <div class="stat-icon-box stat-icon-blue">
+              <i class="fa-solid fa-user-graduate"></i>
+            </div>
+          </div>
+
+          <!-- Rooms Card -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Hostel Rooms</span>
+              <span id="stat-total-rooms" class="stat-value">--</span>
+              <span id="stat-room-occupancy" class="stat-subtext">Loading beds...</span>
+            </div>
+            <div class="stat-icon-box stat-icon-purple">
+              <i class="fa-solid fa-bed"></i>
+            </div>
+          </div>
+
+          <!-- Pending Fees Card -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Outstanding Fees</span>
+              <span id="stat-pending-fees" class="stat-value" style="color:#ef4444;">₹--</span>
+              <span id="stat-collected-fees" class="stat-subtext">Collected: ₹--</span>
+            </div>
+            <div class="stat-icon-box stat-icon-rose">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+          </div>
+
+          <!-- Pending Complaints Card -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Pending Grievances</span>
+              <span id="stat-pending-complaints" class="stat-value" style="color:#f59e0b;">--</span>
+              <span id="stat-total-complaints" class="stat-subtext">Total records</span>
+            </div>
+            <div class="stat-icon-box stat-icon-amber">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Room Status Chart -->
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-door-open" style="color:var(--primary); margin-right:6px;"></i> Room Occupancy</h3>
+              <span class="badge badge-partial">Live Beds</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="roomOccupancyChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Fee Collection Distribution -->
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color:var(--secondary); margin-right:6px;"></i> Invoicing Breakdown</h3>
+              <span class="badge badge-paid">INR Invoices</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="feeStatusChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Grievances Resolution -->
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-clipboard-check" style="color:#f59e0b; margin-right:6px;"></i> Grievance Status</h3>
+              <span class="badge badge-medium">Ticket Resolution</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="complaintChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities Tables -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px, 1fr)); gap:1.5rem;">
+          <!-- Recent Complaints -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Recent Grievances</h3>
+              <a href="/admin/complaints.html" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Grievance</th>
+                    <th>Student</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-complaints-tbody">
+                  <tr><td colspan="4" class="loading-container"><span class="spinner"></span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Visitors -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Recent Visitor Passes</h3>
+              <a href="/admin/visitors.html" class="btn btn-secondary btn-sm">View Log</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Visitor</th>
+                    <th>Student</th>
+                    <th>Visit Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-visitors-tbody">
+                  <tr><td colspan="4" class="loading-container"><span class="spinner"></span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('admin');
+      loadAdminDashboard();
+    });
+  </script>
+</body>
+</html>

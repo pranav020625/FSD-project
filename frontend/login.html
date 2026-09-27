@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Hostel Management System</title>
+  <meta name="description" content="Secure portal login for students, wardens, and administrators.">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 27, 75) 90%);
+      padding: 1.5rem;
+    }
+    .auth-card {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 440px;
+      padding: 2.25rem;
+      position: relative;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
+    }
+    .demo-accounts-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+    .demo-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <i class="fa-solid fa-hotel"></i>
+      </div>
+      <h2 style="font-size: 1.5rem; color: #0f172a;">Hostel Portal Login</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">Enter your credentials to access your dashboard</p>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email Address <span class="req">*</span></label>
+        <div style="position:relative;">
+          <input type="email" id="login-email" class="form-control" placeholder="name@hostel.com" required style="padding-left:2.5rem;">
+          <i class="fa-solid fa-envelope" style="position:absolute; left:0.875rem; top:50%; transform:translateY(-50%); color:var(--text-light);"></i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password <span class="req">*</span></label>
+        <div style="position:relative;">
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required style="padding-left:2.5rem;">
+          <i class="fa-solid fa-lock" style="position:absolute; left:0.875rem; top:50%; transform:translateY(-50%); color:var(--text-light);"></i>
+        </div>
+      </div>
+
+      <button type="submit" id="login-btn" class="btn btn-primary" style="width:100%; margin-top:0.75rem; padding:0.75rem;">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Portal
+      </button>
+    </form>
+
+    <!-- Quick Demo Accounts -->
+    <div class="demo-accounts-box">
+      <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:0.35rem;">
+        <i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> Quick Demo Fill
+      </div>
+      <div class="demo-btn-group">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('admin@hostel.com', 'Admin@123')">
+          <i class="fa-solid fa-user-shield"></i> Warden (Admin)
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('aarav@hostel.com', 'Student@123')">
+          <i class="fa-solid fa-user-graduate"></i> Student (Aarav)
+        </button>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:1.5rem; font-size:0.875rem; color:var(--text-muted);">
+      New resident? <a href="/register.html" style="font-weight:600;">Create a Student Account</a>
+    </div>
+
+    <div style="text-align:center; margin-top:0.75rem; font-size:0.8rem;">
+      <a href="/" style="color:var(--text-light);"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      redirectIfLoggedIn();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('expired') === 'true') {
+        showToast('Your session has expired. Please login again.', 'warning');
+      }
+    });
+
+    function fillDemo(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+      showToast(`Filled credentials for ${email}`, 'info', 2000);
+    }
+  </script>
+</body>
+</html>

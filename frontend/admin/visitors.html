@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Gate Logs - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Warden Admin</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Core Management</div>
+        <a href="/admin/dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="/admin/students.html" class="nav-link"><i class="fa-solid fa-user-graduate"></i> Students</a>
+        <a href="/admin/rooms.html" class="nav-link"><i class="fa-solid fa-bed"></i> Rooms & Beds</a>
+        <a href="/admin/fees.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> Hostel Fees</a>
+
+        <div class="nav-label">Operations & Desk</div>
+        <a href="/admin/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Complaints</a>
+        <a href="/admin/visitors.html" class="nav-link active"><i class="fa-solid fa-id-badge"></i> Visitor Logs</a>
+        <a href="/admin/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Notice Board</a>
+        <a href="/admin/reports.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Reports & Stats</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar">A</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Chief Warden</span>
+            <span id="sidebar-user-role" class="user-role-label">ADMINISTRATOR</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Visitor Passes & Gate Logs</h1>
+        </div>
+      </header>
+
+      <div class="content-body">
+        
+        <!-- Filter Bar -->
+        <div class="action-bar">
+          <div class="search-filter-group">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="visitor-search" class="form-control" placeholder="Search visitor or student..." oninput="loadVisitors()">
+            </div>
+
+            <select id="filter-visitor-status" class="form-select filter-select" onchange="loadVisitors()">
+              <option value="All">All Passes</option>
+              <option value="Pending">Pending Approval</option>
+              <option value="Approved">Approved / Active</option>
+              <option value="Completed">Completed / Left</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="loadVisitors()">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Visitor Details</th>
+                <th>Relationship</th>
+                <th>Host Resident</th>
+                <th>Visit Date</th>
+                <th>Entry / Exit Time</th>
+                <th>Purpose</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="visitors-table-body">
+              <tr><td colspan="8" class="loading-container"><span class="spinner"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Log Entry / Exit Time Modal -->
+  <div id="log-time-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Log Gate Timings for <span id="log-visitor-name" style="color:var(--primary);"></span></h3>
+        <button class="modal-close" onclick="closeModal('log-time-modal')">&times;</button>
+      </div>
+      <form onsubmit="handleSaveLogTime(event)">
+        <div class="modal-body">
+          <input type="hidden" id="log-visitor-id">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">In-Time (Entry)</label>
+              <input type="text" id="log-in-time" class="form-control" placeholder="e.g. 10:30 AM">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Out-Time (Exit)</label>
+              <input type="text" id="log-out-time" class="form-control" placeholder="e.g. 01:15 PM">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Pass Status</label>
+            <select id="log-status" class="form-select">
+              <option value="Approved">Approved (Inside Campus)</option>
+              <option value="Completed">Completed (Checked Out)</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('log-time-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save Timestamps
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/visitors.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('admin');
+      loadVisitors();
+    });
+  </script>
+</body>
+</html>

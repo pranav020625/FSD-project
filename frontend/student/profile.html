@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Student Resident</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">My Living Space</div>
+        <a href="/student/dashboard.html" class="nav-link"><i class="fa-solid fa-house-user"></i> Overview</a>
+        <a href="/student/room.html" class="nav-link"><i class="fa-solid fa-door-open"></i> My Room</a>
+        <a href="/student/fees.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Fee Status</a>
+
+        <div class="nav-label">Desk & Services</div>
+        <a href="/student/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> My Complaints</a>
+        <a href="/student/visitors.html" class="nav-link"><i class="fa-solid fa-id-badge"></i> Visitor Passes</a>
+        <a href="/student/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Hostel Notices</a>
+        <a href="/student/profile.html" class="nav-link active"><i class="fa-solid fa-user-gear"></i> My Profile</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar" style="background:linear-gradient(135deg, #10b981, #06b6d4);">S</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Student</span>
+            <span id="sidebar-user-role" class="user-role-label">RESIDENT</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Resident Student Profile</h1>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <div style="max-width:800px; margin:0 auto;">
+          
+          <div class="card" style="margin-bottom:1.5rem;">
+            <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+              <div class="user-avatar" style="width:72px; height:72px; font-size:2rem; background:linear-gradient(135deg, #4361ee, #7209b7);" id="profile-big-avatar">S</div>
+              <div>
+                <h2 id="profile-name" style="margin:0; font-size:1.5rem;">Loading...</h2>
+                <div id="profile-student-id" style="color:var(--primary); font-weight:700; font-size:1rem; margin-top:2px;">ROLL NO</div>
+                <div id="profile-course-branch" style="color:var(--text-muted); font-size:0.875rem;">Course & Branch</div>
+              </div>
+            </div>
+          </div>
+
+          <form id="profile-form" onsubmit="handleUpdateProfile(event)">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Personal & Contact Information</h3>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" id="prof-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address (Read-only)</label>
+                  <input type="email" id="prof-email" class="form-control" readonly style="background:#f1f5f9; cursor:not-allowed;">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Phone Number <span class="req">*</span></label>
+                  <input type="tel" id="prof-phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <select id="prof-gender" class="form-select">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Course</label>
+                  <input type="text" id="prof-course" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Branch</label>
+                  <input type="text" id="prof-branch" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Year</label>
+                  <input type="text" id="prof-year" class="form-control">
+                </div>
+              </div>
+
+              <div class="card-header" style="margin-top:1rem;">
+                <h3 class="card-title">Emergency / Guardian Contact</h3>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Parent / Guardian Name</label>
+                  <input type="text" id="prof-parent-name" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Parent / Guardian Phone</label>
+                  <input type="tel" id="prof-parent-phone" class="form-control">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Permanent Address</label>
+                <textarea id="prof-address" class="form-control"></textarea>
+              </div>
+
+              <div style="text-align:right; margin-top:1rem;">
+                <button type="submit" id="update-profile-btn" class="btn btn-primary">
+                  <i class="fa-solid fa-check"></i> Update Profile
+                </button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('student');
+      loadProfileData();
+    });
+
+    async function loadProfileData() {
+      try {
+        const res = await API.request('/auth/me');
+        if (!res.success) return;
+        const u = res.data.user;
+        const s = u.studentProfile || {};
+
+        document.getElementById('profile-name').textContent = u.name;
+        document.getElementById('profile-student-id').textContent = u.studentId || 'STUDENT';
+        document.getElementById('profile-course-branch').textContent = `${s.course || u.course || 'B.Tech'} - ${s.branch || 'General'} (${s.year || u.year || '1st Year'})`;
+        document.getElementById('profile-big-avatar').textContent = u.name.charAt(0).toUpperCase();
+
+        document.getElementById('prof-name').value = u.name || '';
+        document.getElementById('prof-email').value = u.email || '';
+        document.getElementById('prof-phone').value = u.phone || s.phone || '';
+        document.getElementById('prof-gender').value = u.gender || s.gender || 'Male';
+        document.getElementById('prof-course').value = s.course || u.course || '';
+        document.getElementById('prof-branch').value = s.branch || '';
+        document.getElementById('prof-year').value = s.year || u.year || '';
+        document.getElementById('prof-parent-name').value = s.parentName || '';
+        document.getElementById('prof-parent-phone').value = s.parentPhone || '';
+        document.getElementById('prof-address').value = s.address || '';
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function handleUpdateProfile(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('update-profile-btn');
+
+      const payload = {
+        name: document.getElementById('prof-name').value.trim(),
+        phone: document.getElementById('prof-phone').value.trim(),
+        gender: document.getElementById('prof-gender').value,
+        course: document.getElementById('prof-course').value.trim(),
+        branch: document.getElementById('prof-branch').value.trim(),
+        year: document.getElementById('prof-year').value.trim(),
+        parentName: document.getElementById('prof-parent-name').value.trim(),
+        parentPhone: document.getElementById('prof-parent-phone').value.trim(),
+        address: document.getElementById('prof-address').value.trim()
+      };
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner" style="width:1rem;height:1rem;border-width:2px;"></span> Saving...';
+
+        const res = await API.request('/auth/profile', {
+          method: 'PUT',
+          body: payload
+        });
+
+        showToast(res.message, 'success');
+        loadProfileData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update Profile';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Warden Admin</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Core Management</div>
+        <a href="/admin/dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="/admin/students.html" class="nav-link active"><i class="fa-solid fa-user-graduate"></i> Students</a>
+        <a href="/admin/rooms.html" class="nav-link"><i class="fa-solid fa-bed"></i> Rooms & Beds</a>
+        <a href="/admin/fees.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> Hostel Fees</a>
+
+        <div class="nav-label">Operations & Desk</div>
+        <a href="/admin/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Complaints</a>
+        <a href="/admin/visitors.html" class="nav-link"><i class="fa-solid fa-id-badge"></i> Visitor Logs</a>
+        <a href="/admin/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Notice Board</a>
+        <a href="/admin/reports.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Reports & Stats</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar">A</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Chief Warden</span>
+            <span id="sidebar-user-role" class="user-role-label">ADMINISTRATOR</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Resident Student Directory</h1>
+        </div>
+
+        <div class="navbar-right">
+          <span id="total-student-count" class="header-badge">Loading students...</span>
+          <button class="btn btn-primary btn-sm" onclick="openCreateStudentModal()">
+            <i class="fa-solid fa-user-plus"></i> Register Student
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        
+        <!-- Search & Filters -->
+        <div class="action-bar">
+          <div class="search-filter-group">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="student-search" class="form-control" placeholder="Search by name, ID, email..." oninput="loadStudents(1)">
+            </div>
+
+            <select id="filter-year" class="form-select filter-select" onchange="loadStudents(1)">
+              <option value="All">All Years</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+              <option value="Postgraduate">Postgraduate</option>
+            </select>
+
+            <select id="filter-branch" class="form-select filter-select" onchange="loadStudents(1)">
+              <option value="All">All Branches</option>
+              <option value="Computer Science & Engg">Computer Science</option>
+              <option value="Information Technology">Information Tech</option>
+              <option value="Electronics & Comm Engg">ECE</option>
+              <option value="Mechanical Engg">Mechanical</option>
+              <option value="Data Science">Data Science</option>
+            </select>
+
+            <select id="filter-status" class="form-select filter-select" onchange="loadStudents(1)">
+              <option value="All">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Suspended">Suspended</option>
+              <option value="Alumni">Alumni</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="loadStudents(1)">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <!-- Student Table -->
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Contact Info</th>
+                <th>Course</th>
+                <th>Branch & Year</th>
+                <th>Allocated Room</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <tr><td colspan="8" class="loading-container"><span class="spinner"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div id="students-pagination" class="pagination"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add / Edit Student Modal -->
+  <div id="student-modal" class="modal-overlay">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 id="student-modal-title" class="modal-title">Register Student</h3>
+        <button class="modal-close" onclick="closeModal('student-modal')">&times;</button>
+      </div>
+      <form id="student-form" onsubmit="handleSaveStudent(event)">
+        <div class="modal-body">
+          <input type="hidden" id="student-id-field">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Student ID / Roll No <span class="req">*</span></label>
+              <input type="text" id="modal-student-roll" class="form-control" required placeholder="HST-2026-001">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="req">*</span></label>
+              <input type="text" id="modal-student-name" class="form-control" required placeholder="Aarav Sharma">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email Address <span class="req">*</span></label>
+              <input type="email" id="modal-student-email" class="form-control" required placeholder="student@hostel.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number <span class="req">*</span></label>
+              <input type="tel" id="modal-student-phone" class="form-control" required placeholder="+91 9876543210">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gender <span class="req">*</span></label>
+              <select id="modal-student-gender" class="form-select" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Course <span class="req">*</span></label>
+              <input type="text" id="modal-student-course" class="form-control" required placeholder="B.Tech">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Branch <span class="req">*</span></label>
+              <input type="text" id="modal-student-branch" class="form-control" required placeholder="Computer Science & Engg">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year of Study <span class="req">*</span></label>
+              <select id="modal-student-year" class="form-select" required>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+                <option value="Postgraduate">Postgraduate</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Assign Room</label>
+              <select id="student-room-select" class="form-select">
+                <option value="">-- Select Room (Optional) --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select id="modal-student-status" class="form-select">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Suspended">Suspended</option>
+                <option value="Alumni">Alumni</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Parent / Guardian Name</label>
+              <input type="text" id="modal-student-parent-name" class="form-control" placeholder="Guardian Name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Parent / Guardian Phone</label>
+              <input type="tel" id="modal-student-parent-phone" class="form-control" placeholder="+91 9876543200">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Permanent Address</label>
+            <textarea id="modal-student-address" class="form-control" placeholder="Complete residential address..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('student-modal')">Cancel</button>
+          <button type="submit" id="save-student-btn" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save Student Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Student Details Modal -->
+  <div id="view-student-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Student Profile Details</h3>
+        <button class="modal-close" onclick="closeModal('view-student-modal')">&times;</button>
+      </div>
+      <div id="student-details-content" class="modal-body">
+        <!-- Injected via JavaScript -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('view-student-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/students.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('admin');
+      loadStudents();
+    });
+  </script>
+</body>
+</html>

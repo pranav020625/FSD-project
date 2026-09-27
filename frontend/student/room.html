@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Hostel Room - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Student Resident</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">My Living Space</div>
+        <a href="/student/dashboard.html" class="nav-link"><i class="fa-solid fa-house-user"></i> Overview</a>
+        <a href="/student/room.html" class="nav-link active"><i class="fa-solid fa-door-open"></i> My Room</a>
+        <a href="/student/fees.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Fee Status</a>
+
+        <div class="nav-label">Desk & Services</div>
+        <a href="/student/complaints.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> My Complaints</a>
+        <a href="/student/visitors.html" class="nav-link"><i class="fa-solid fa-id-badge"></i> Visitor Passes</a>
+        <a href="/student/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Hostel Notices</a>
+        <a href="/student/profile.html" class="nav-link"><i class="fa-solid fa-user-gear"></i> My Profile</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar" style="background:linear-gradient(135deg, #10b981, #06b6d4);">S</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Student</span>
+            <span id="sidebar-user-role" class="user-role-label">RESIDENT</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">My Accommodation Details</h1>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <div id="room-content-container">
+          <div class="loading-container"><span class="spinner"></span><span>Loading your room details...</span></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('student');
+      loadMyRoom();
+    });
+
+    async function loadMyRoom() {
+      const container = document.getElementById('room-content-container');
+      try {
+        const userRes = await API.request('/auth/me');
+        const s = userRes.data.user.studentProfile;
+
+        if (!s || !s.room) {
+          container.innerHTML = `
+            <div class="card empty-state" style="max-width:600px; margin:2rem auto;">
+              <div class="empty-state-icon"><i class="fa-solid fa-bed"></i></div>
+              <div class="empty-state-title">No Room Allocated Yet</div>
+              <p class="empty-state-text">You have not been assigned to a hostel room currently. Please contact the Chief Warden or Hostel Office to complete your room allocation.</p>
+              <a href="/student/complaints.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i> Contact Office</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Fetch full room with populated roommates
+        const roomRes = await API.request(`/rooms/${s.room._id}`);
+        const r = roomRes.data;
+
+        container.innerHTML = `
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem; max-width:1100px;">
+            
+            <!-- Room Info Card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-door-open" style="color:var(--primary); margin-right:6px;"></i> Room Specifications</h3>
+                <span class="badge badge-paid">Allocated</span>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem;">
+                <div style="width:70px; height:70px; border-radius:var(--radius-lg); background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:800;">
+                  ${escapeHtml(r.roomNumber)}
+                </div>
+                <div>
+                  <h3 style="margin:0; font-size:1.4rem;">Room ${escapeHtml(r.roomNumber)}</h3>
+                  <div style="color:var(--text-muted); font-size:0.875rem;">Block ${escapeHtml(r.block)} &bull; Floor ${r.floor}</div>
+                  <div style="color:var(--primary); font-weight:600; font-size:0.8125rem; margin-top:2px;">${escapeHtml(r.roomType)} Room (${escapeHtml(r.gender || 'Any')})</div>
+                </div>
+              </div>
+
+              <div class="form-row" style="background:#f8fafc; padding:1rem; border-radius:var(--radius-md); margin-bottom:1.25rem;">
+                <div><strong>Total Capacity:</strong> ${r.capacity} Beds</div>
+                <div><strong>Occupied Beds:</strong> ${r.occupiedBeds} Beds</div>
+                <div><strong>Status:</strong> ${r.status}</div>
+              </div>
+
+              <h4 style="font-size:0.95rem; margin-bottom:0.75rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Room Facilities Included</h4>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.8125rem; color:var(--text-muted);">
+                <div><i class="fa-solid fa-check" style="color:#10b981;"></i> High Speed Wi-Fi</div>
+                <div><i class="fa-solid fa-check" style="color:#10b981;"></i> Individual Study Table</div>
+                <div><i class="fa-solid fa-check" style="color:#10b981;"></i> Ceiling Fan & Light</div>
+                <div><i class="fa-solid fa-check" style="color:#10b981;"></i> Lockable Wardrobe</div>
+                <div><i class="fa-solid fa-check" style="color:#10b981;"></i> 24x7 Power Backup</div>
+                <div><i class="fa-solid fa-check" style="color:#10b981;"></i> Filtered Water Station</div>
+              </div>
+            </div>
+
+            <!-- Roommates Card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-users" style="color:var(--secondary); margin-right:6px;"></i> Roommates (${r.students.length})</h3>
+                <span class="badge badge-partial">${r.occupiedBeds}/${r.capacity} Beds</span>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                ${r.students.map(rm => `
+                  <div style="display:flex; align-items:center; justify-content:space-between; padding:0.875rem; border:1px solid var(--border-color); border-radius:var(--radius-md); background:#ffffff;">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                      <div class="user-avatar" style="width:40px; height:40px; font-size:1rem;">${rm.name.charAt(0)}</div>
+                      <div>
+                        <div style="font-weight:700; font-size:0.9rem;">
+                          ${escapeHtml(rm.name)} ${rm._id.toString() === s._id.toString() ? '<span class="badge badge-paid" style="font-size:0.65rem; margin-left:4px;">You</span>' : ''}
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-light);">${escapeHtml(rm.studentId)} &bull; ${escapeHtml(rm.branch)} (${escapeHtml(rm.year)})</div>
+                      </div>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">
+                      <a href="tel:${rm.phone}" class="btn btn-secondary btn-sm" style="padding:0.25rem 0.5rem;"><i class="fa-solid fa-phone"></i></a>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Error</div><p class="empty-state-text">${escapeHtml(err.message)}</p></div>`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grievance & Complaints - Hostel Management System</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon"><i class="fa-solid fa-hotel"></i></div>
+        <div>
+          <div class="sidebar-brand">Hostel<span>Sphere</span></div>
+          <span class="sidebar-role-badge">Warden Admin</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Core Management</div>
+        <a href="/admin/dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="/admin/students.html" class="nav-link"><i class="fa-solid fa-user-graduate"></i> Students</a>
+        <a href="/admin/rooms.html" class="nav-link"><i class="fa-solid fa-bed"></i> Rooms & Beds</a>
+        <a href="/admin/fees.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> Hostel Fees</a>
+
+        <div class="nav-label">Operations & Desk</div>
+        <a href="/admin/complaints.html" class="nav-link active"><i class="fa-solid fa-bullhorn"></i> Complaints</a>
+        <a href="/admin/visitors.html" class="nav-link"><i class="fa-solid fa-id-badge"></i> Visitor Logs</a>
+        <a href="/admin/notices.html" class="nav-link"><i class="fa-solid fa-clipboard-list"></i> Notice Board</a>
+        <a href="/admin/reports.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Reports & Stats</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini">
+          <div id="sidebar-user-avatar" class="user-avatar">A</div>
+          <div class="user-meta">
+            <span id="sidebar-user-name" class="user-name">Chief Warden</span>
+            <span id="sidebar-user-role" class="user-role-label">ADMINISTRATOR</span>
+          </div>
+        </div>
+        <button class="btn-icon" title="Logout" onclick="logoutUser()" style="border-color:rgba(255,255,255,0.1); color:#ef4444;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title">Grievance & Complaints Desk</h1>
+        </div>
+      </header>
+
+      <div class="content-body">
+        
+        <!-- Filter Bar -->
+        <div class="action-bar">
+          <div class="search-filter-group">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="complaint-search" class="form-control" placeholder="Search title or student..." oninput="loadComplaints()">
+            </div>
+
+            <select id="filter-complaint-category" class="form-select filter-select" onchange="loadComplaints()">
+              <option value="All">All Categories</option>
+              <option value="Room">Room</option>
+              <option value="Food">Food / Mess</option>
+              <option value="Electricity">Electricity</option>
+              <option value="Water">Water</option>
+              <option value="Internet">Internet</option>
+              <option value="Cleanliness">Cleanliness</option>
+              <option value="Security">Security</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <select id="filter-complaint-status" class="form-select filter-select" onchange="loadComplaints()">
+              <option value="All">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="loadComplaints()">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <!-- Complaints Table -->
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Complaint Title</th>
+                <th>Category</th>
+                <th>Student</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Filed Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="complaints-table-body">
+              <tr><td colspan="7" class="loading-container"><span class="spinner"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Admin Respond Modal -->
+  <div id="respond-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Process Student Grievance</h3>
+        <button class="modal-close" onclick="closeModal('respond-modal')">&times;</button>
+      </div>
+      <form onsubmit="handleSaveComplaintResponse(event)">
+        <div class="modal-body">
+          <input type="hidden" id="respond-complaint-id">
+
+          <div style="background:#f8fafc; padding:1rem; border-radius:var(--radius-md); margin-bottom:1.25rem;">
+            <h4 id="respond-title" style="font-size:1.05rem; margin-bottom:0.25rem;"></h4>
+            <div style="font-size:0.8rem; color:var(--text-light); margin-bottom:0.5rem;">
+              Filed by: <strong id="respond-student"></strong>
+            </div>
+            <p id="respond-desc" style="font-size:0.875rem; color:var(--text-muted); margin:0; white-space:pre-wrap;"></p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Update Status <span class="req">*</span></label>
+            <select id="respond-status" class="form-select" required>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Warden Response / Action Taken</label>
+            <textarea id="respond-text" class="form-control" placeholder="Describe the resolution or actions taken by maintenance staff..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('respond-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save Response
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/complaints.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth('admin');
+      loadComplaints();
+    });
+  </script>
+</body>
+</html>
